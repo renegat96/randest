@@ -55,16 +55,16 @@ namespace randest {
         }
     };
 
-    template<OutputT>
-    class mem_data : public data_provider {
+    template<typename OutputT>
+    class mem_data : public data_provider<OutputT> {
     private:
         ::std::vector<OutputT> data;
     public:
         mem_data(::std::vector<OutputT> input) {
-            data = ::std::vector(input);
+            data = ::std::vector<OutputT>(input);
         }
         mem_data(OutputT *data, size_t len) {
-            data = ::std::vector(data, data + len);
+            data = ::std::vector<OutputT>(data, data + len);
         }
         OutputT const& operator[](size_t pos) {
             return data[pos];
