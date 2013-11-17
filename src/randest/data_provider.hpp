@@ -35,7 +35,7 @@ namespace randest {
             } else throw "something went wrong while opening the file";
         }
         const ::std::string getFilename() {
-            return ::std::string(this.filename);
+            return ::std::string(this->filename);
         }
         size_t size() {
             return this->sizeT;
