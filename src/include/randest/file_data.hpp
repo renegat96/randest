@@ -1,14 +1,7 @@
 #pragma once
-#include <fstream>
-#include <algorithm>
+#include <vector>
+#include <randest/data_provider.hpp>
 namespace randest {
-    template<typename OutputT>
-    class data_provider {
-    public:
-        virtual size_t size() = 0;
-        virtual OutputT const& operator[](size_t pos) = 0;
-    };
-    
     template<typename OutputT>
     class file_data : public data_provider<OutputT> {
     private:
@@ -18,6 +11,13 @@ namespace randest {
         char* cachedMem;
         size_t bytes;
     public:
+        /*
+        file_data(::std::string filename, size_t bytes = 128 << 20);
+        ~file_data();
+        const ::std::string getFilename();
+        OutputT const& operator[](size_t pos);
+        */
+
         file_data(::std::string filename, size_t bytes = 128 << 20) {
             this->filename = filename;
             this->cachedMem = new char[bytes];
@@ -33,6 +33,9 @@ namespace randest {
                 file.read(cachedMem, bytes);
                 file.close();
             } else throw "something went wrong while opening the file";
+        }
+        ~file_data() {
+            delete[] cachedMem;
         }
         const ::std::string getFilename() {
             return ::std::string(this->filename);
@@ -52,25 +55,6 @@ namespace randest {
                 } else throw "something went wrong while opening the file";
             }
             return *(reinterpret_cast<OutputT*>(cachedMem + memPosition - pos));
-        }
-    };
-
-    template<typename OutputT>
-    class mem_data : public data_provider<OutputT> {
-    private:
-        ::std::vector<OutputT> data;
-    public:
-        mem_data(::std::vector<OutputT> input) {
-            data = ::std::vector<OutputT>(input);
-        }
-        mem_data(OutputT *data, size_t len) {
-            data = ::std::vector<OutputT>(data, data + len);
-        }
-        OutputT const& operator[](size_t pos) {
-            return data[pos];
-        }
-        size_t size() {
-            return data.size();
         }
     };
 }
