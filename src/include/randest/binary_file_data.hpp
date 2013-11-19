@@ -1,9 +1,13 @@
 #pragma once
+
 #include <vector>
+#include <fstream>
+
 #include <randest/data_provider.hpp>
+
 namespace randest {
     template<typename OutputT>
-    class file_data : public data_provider<OutputT> {
+    class binary_file_data : public data_provider<OutputT> {
     private:
         size_t sizeT;
         ::std::string filename;
@@ -12,13 +16,13 @@ namespace randest {
         size_t bytes;
     public:
         /*
-        file_data(::std::string filename, size_t bytes = 128 << 20);
-        ~file_data();
+        binary_file_data(::std::string filename, size_t bytes = 128 << 20);
+        ~binary_file_data();
         const ::std::string getFilename();
         OutputT const& operator[](size_t pos);
         */
 
-        file_data(::std::string filename, size_t bytes = 128 << 20) {
+        binary_file_data(::std::string filename, bool binary = true, size_t bytes = 128 << 20) {
             this->filename = filename;
             this->cachedMem = new char[bytes];
             this->memPosition = 0;
@@ -34,7 +38,7 @@ namespace randest {
                 file.close();
             } else throw "something went wrong while opening the file";
         }
-        ~file_data() {
+        ~binary_file_data() {
             delete[] cachedMem;
         }
         const ::std::string getFilename() {
