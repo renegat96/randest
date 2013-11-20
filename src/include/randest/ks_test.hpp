@@ -6,6 +6,9 @@
  * */
 
 #pragma once
+
+#include <functional>
+
 #include <randest/test.hpp>
 #include <randest/data_provider.hpp>
 #include <randest/data_sort.hpp>
@@ -15,18 +18,17 @@ namespace randest {
     template<typename OutputT = long double>
     struct NormalDistribution {
         long double operator()(const OutputT &x) {
-            return x;
+            return static_cast<long double>(x);
         }
     };
 
     template<typename OutputT = long double,
              typename Compare = std::less<OutputT>,
-             typename CDF = NormalDistribution<OutputT>>
+             typename CDF = std::function<long double(OutputT)>>
     class ks_test : public test {
     private:
         bool ran;
         randest::data_provider<OutputT> *data;
-        CDF comp;
         long double ks_statistic;
 
         /*
@@ -34,28 +36,30 @@ namespace randest {
         */
 
         ks_test();
-        data_sort<OutputT> sorted;
+
+        CDF cdf;
 
     public:
 
         /*
-        ks_test(data_provider<OutputT> *data);
+        ks_test(data_provider<OutputT> *data, CDF cdf = NormalDistribution<OutputT>());
         void run();
         long double getPerformance();
         */
 
-        ks_test(data_provider<OutputT> *data) {
+        ks_test(data_provider<OutputT> *data, CDF cdf = NormalDistribution<OutputT>()) {
             this->data = data;
-            this->comp = comp;
             this->ks_statistic = 0;
+            this->cdf = cdf;
         }
 
         void run() {
-            sorted = data_sort<OutputT, Compare>(data);
+            ::randest::data_sort<OutputT> sorted = data_sort<OutputT, Compare>(data);
             ks_statistic = 0;
-            for (size_t i = 0; i < sorted; ++i) {
-                long double fx = (long double)sorted.count_smaller(sorted[i]) / sorted.size();
-                long double candidate = fabsl(CDF(sorted[i]) - fx);
+            for (size_t i = 0; i < sorted.size(); ++i) {
+                long double fx = static_cast<long double>(sorted.count_smaller(sorted[i])) / sorted.size();
+                long double observation = cdf(sorted[i]);
+                long double candidate = fabsl(observation - fx);
                 ks_statistic = std::max(ks_statistic, candidate);
             }
             ran = true;
