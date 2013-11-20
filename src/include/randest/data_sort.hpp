@@ -8,9 +8,14 @@ namespace randest {
     class data_sort {
     private:
         struct comparison {
-            bool operator()(const unsigned int &a, const unsigned int &b) {
-                return Compare(this->data->at(a), this->data->at(b));
+            comparison(::randest::data_provider<OutputT> *data) {
+                this->data = data;
             }
+            bool operator()(const unsigned int &a, const unsigned int &b) {
+                return Compare()(this->data->at(a), this->data->at(b));
+            }
+        private:
+            ::randest::data_provider<OutputT> *data;
         };
         unsigned int *indexes;
         unsigned int *reverse_indexes;
@@ -42,7 +47,7 @@ namespace randest {
             for (size_t i = 0; i < data->size(); ++i) {
                 indexes[i] = i;
             }
-            std::sort(indexes, indexes + this->data->size(), comparison());
+            std::sort(indexes, indexes + this->data->size(), comparison(this->data));
             for (size_t i = 0; i < data->size(); ++i) {
                 reverse_indexes[indexes[i]] = i;
             }
@@ -62,7 +67,7 @@ namespace randest {
             return this->data->at(reverse_indexes[index]);
         }
         size_t count_smaller(const OutputT &value) {
-            return std::upper_bound(indexes, indexes + this->data->size(), value, comparison()) - indexes;
+            return std::upper_bound(indexes, indexes + this->data->size(), value, comparison(this->data)) - indexes;
         }
     };
 }
