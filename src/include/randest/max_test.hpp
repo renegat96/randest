@@ -74,7 +74,7 @@ namespace randest {
             }
 
             ::randest::mem_data<OutputT> max_elements_data(max_elements);
-            this->kstest = new ::randest::ks_test<OutputT> (&max_elements_data, XPowerT<OutputT>(group_size));
+            this->kstest = new ks_test<OutputT> (&max_elements_data, XPowerT<OutputT>(group_size));
             this->kstest->run();
             this->ran = true;
         }
