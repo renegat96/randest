@@ -17,15 +17,13 @@ enum source {
 
 void printUsage() {
     std::cout << "usage: randest --int|--double\n" <<
-                 "               [--stdin|--binary-file path|--file path]\n"
-                 "               [\n" <<
+                 "               [--stdin|--binary-file path]\n"
                  "                --kstest |\n" <<
                  "                --freqinterval lower upper |\n" <<
                  "                --freqpresent |\n" <<
                  "                --coupon n t upper |\n" <<
                  "                --maxtest groupsize |\n" <<
-                 "                --monotone t [--increasing|--decreasing] |\n" <<
-                 "               ]\n";
+                 "                --monotone t [--increasing|--decreasing] |\n";
 }
 
 randest::data_provider<long long>* readIntegers(const source &s, const std::string &filepath) {
@@ -210,13 +208,11 @@ int main(int argc, char* argv[]) {
 
 /*
  * usage: randest --int|--double
- *                [--stdin|--binary-file path|--file path]
- *                [
+ *                [--stdin|--binary-file path]
  *                 --kstest |
  *                 --freqinterval lower upper |
  *                 --freqpresent |
  *                 --coupon n t upper |
  *                 --maxtest groupsize |
  *                 --monotone t [--increasing|--decreasing] |
- *                ]
 */
