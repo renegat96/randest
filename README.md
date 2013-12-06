@@ -3,6 +3,8 @@ Randest
 
 Tool for randomness testing of data.
 
+For a more detailed explanation, refer to paper/documentation.pdf. (in Bulgarian)
+
 Compiling
 =======
 
