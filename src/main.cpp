@@ -1,8 +1,11 @@
+#include <gmpxx.h>
+#include <iomanip>
 #include <iostream>
+#include <randest/data_provider.hpp>
+#include <randest/spectral_test.cpp>
+#include <randest/tests.hpp>
 #include <string>
 #include <vector>
-#include <randest/data_provider.hpp>
-#include <randest/tests.hpp>
 
 enum data_type {
     integer,
@@ -97,6 +100,8 @@ void monotone(randest::data_provider<T> *data, const size_t t, const bool &ups) 
 }
 
 int main(int argc, char* argv[]) {
+    //std::ios::sync_with_stdio(false);
+    //std::cin.tie(nullptr);
     if (argc == 1) {
         printUsage();
         return 0;
@@ -113,6 +118,33 @@ int main(int argc, char* argv[]) {
                 exit(-1);
             }
         };
+    if (0 == arguments[consumed].compare("--spectral")) {
+        consumed++; //check();
+        mpz_class a(arguments[consumed]);
+        consumed++;
+        mpz_class c(arguments[consumed]);
+        consumed++;
+        mpz_class m(arguments[consumed]);
+        consumed++;
+        ////a = arguments[consumed++];
+        //std::cout << a << '\n';
+        ////c = arguments[consumed++];
+        //std::cout << c << '\n';
+        ////m = arguments[consumed++];
+        //std::cout << m << '\n';
+        int T = std::stoi(arguments[consumed]);
+
+        std::cout << "Running a spectral test...\n";
+        //std::cout << a << '\n';
+        //std::cout << c << '\n';
+        //std::cout << m << '\n';
+        //std::cout << T << '\n';
+        mpf_set_default_prec(1000);
+        auto result = randest::spectral_test::run(a, c, m, T);
+        std::cout << std::fixed << std::setprecision(20);
+        std::cout << "Result: " << result << '\n';
+        return 0;
+    }
     if (arguments[consumed].compare("--int") == 0) { 
         type = integer;
     } else if (arguments[consumed].compare("--double") == 0) {

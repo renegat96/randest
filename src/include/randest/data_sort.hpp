@@ -17,6 +17,16 @@ namespace randest {
         private:
             ::randest::data_provider<OutputT> *data;
         };
+        struct binarysearch {
+            binarysearch(::randest::data_provider<OutputT> *data) {
+                this->data = data;
+            }
+            bool operator()(const OutputT &a, const unsigned int &b) {
+                return Compare()(a, this->data->at(b));
+            }
+        private:
+            ::randest::data_provider<OutputT> *data;
+        };
         unsigned int *indexes;
         unsigned int *reverse_indexes;
         data_provider<OutputT> *data;
@@ -67,7 +77,7 @@ namespace randest {
             return this->data->at(reverse_indexes[index]);
         }
         size_t count_smaller(const OutputT &value) {
-            return std::upper_bound(indexes, indexes + this->data->size(), value, comparison(this->data)) - indexes;
+            return std::upper_bound(indexes, indexes + this->data->size(), value, binarysearch(this->data)) - indexes;
         }
     };
 }

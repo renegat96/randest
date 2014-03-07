@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include <randest/freq_int_present.hpp>
+#include <randest/freq_int_interval.hpp>
 
 namespace randest {
     template<typename OutputT = long double,
@@ -13,16 +13,13 @@ namespace randest {
         size_t t;
         std::vector<long long> lengths;
         randest::data_provider<OutputT> *data;
-        randest::freq_int_present *freq;
+        randest::freq_int_interval<> *freq;
     public:
         monotone_test(randest::data_provider<OutputT> *data, size_t t, bool runUps = true) {
             this->runUps = runUps;
             this->ran = false;
             this->data = data;
             this->t = t;
-        }
-        ~monotone_test() {
-            if (ran) delete this->freq;
         }
         void run() {
             lengths.clear();
@@ -39,7 +36,7 @@ namespace randest {
             }
 
             ::randest::mem_data<long long> runs(lengths);
-            this->freq = new randest::freq_int_present(&runs);
+            this->freq = new randest::freq_int_interval<>(&runs, 1, t);
             this->freq->run();
             this->ran = true;
         }

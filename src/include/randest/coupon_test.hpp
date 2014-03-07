@@ -11,7 +11,7 @@ namespace randest {
         bool ran;
         size_t t, n;
         randest::data_provider<OutputT> *data;
-        randest::freq_int_present *test;
+        randest::freq_int_interval<long long> *test;
         OutputT lower_bound;
         OutputT upper_bound;
         std::set<OutputT> found;
@@ -29,13 +29,18 @@ namespace randest {
             delete test;
         }
         void run() {
+            std::cout << "Ran coupon test with parameters:\n" <<
+                         "lower_bound = " << lower_bound << '\n' <<
+                         "upper_bound = " << upper_bound << '\n' <<
+                         "t = " << t << '\n' <<
+                         "n = " << n << '\n';
             found.clear();
             lengths.clear();
             size_t last = 0;
             for (size_t i = 0; i < data->size() && lengths.size() < n; ++i) {
                 found.insert(data->at(i));
                 if (found.size() == (this->upper_bound - this->lower_bound)) {
-                    lengths.push_back(std::min(t, i - last));
+                    lengths.push_back(std::min(t, i - last + 1));
                     last = i;
                     found.clear();
                 }

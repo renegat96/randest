@@ -1,0 +1,10 @@
+#!/bin/bash
+
+for i in `seq 2 6`; do
+    echo ------ T = $i ------;
+    ../bin/randest --spectral $1 $2 $3 $i ;
+    echo v_t '>' $((2**(30 / $i))) '(Expected minimum value to consider secure according to Knuth)';
+done
+
+../bin/lcg $RANDOM $1 $2 $3 1000000 > generated ; 
+../bin/randest --double --stdin --kstest < generated;

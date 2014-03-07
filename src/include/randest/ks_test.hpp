@@ -56,11 +56,15 @@ namespace randest {
         void run() {
             ::randest::data_sort<OutputT> sorted = data_sort<OutputT, Compare>(data);
             ks_statistic = 0;
-            for (size_t i = 0; i < sorted.size(); ++i) {
+            size_t size = sorted.size();
+            for (size_t i = 0; i < size; ++i) {
                 long double fx = static_cast<long double>(sorted.count_smaller(sorted[i])) / sorted.size();
                 long double observation = cdf(sorted[i]);
                 long double candidate = fabsl(observation - fx);
-                ks_statistic = std::max(ks_statistic, candidate);
+                //ks_statistic = std::max(ks_statistic, candidate);
+                if (ks_statistic < candidate) {
+                    ks_statistic = candidate;
+                }
             }
             ran = true;
         }
